@@ -1,0 +1,76 @@
+{
+  materials: [
+    {
+      name: 'ofc003_wood__Vra',
+      parameters: [
+        {
+          baseColor: 'OFC00302',
+        },
+        {
+          baseColorTint: [
+            1,
+            1,
+            1,
+            1,
+          ],
+        },
+        {
+          metallic: 1,
+        },
+        {
+          roughness: 0.33333299999999999,
+        },
+        {
+          opacity: null,
+        },
+      ],
+      source: 'build/sceneform_sdk/default_materials/obj_material.sfm',
+    },
+    {
+      name: 'ofc003_metall_bu',
+      parameters: [
+        {
+          baseColor: null,
+        },
+        {
+          baseColorTint: [
+            0.58823499999999995,
+            0.58823499999999995,
+            0.58823499999999995,
+            1,
+          ],
+        },
+        {
+          metallic: 1,
+        },
+        {
+          roughness: 0.031234999999999999,
+        },
+        {
+          opacity: null,
+        },
+      ],
+      source: 'build/sceneform_sdk/default_materials/obj_material.sfm',
+    },
+  ],
+  model: {
+    attributes: [
+      'Position',
+      'TexCoord',
+      'Orientation',
+    ],
+    collision: {},
+    file: 'sampledata/ofc003_OBJ/ofc003.obj',
+    name: 'ofc003',
+    recenter: 'root',
+    scale: 0.002068,
+  },
+  samplers: [
+    {
+      file: 'sampledata/ofc003_OBJ/OFC00302.jpg',
+      name: 'OFC00302',
+      pipeline_name: 'OFC00302.jpg',
+    },
+  ],
+  version: '0.54:2',
+}

@@ -1,10 +1,8 @@
 package com.scenesdksample
 
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.text.Html
 import android.text.Spanned
 import android.view.MotionEvent

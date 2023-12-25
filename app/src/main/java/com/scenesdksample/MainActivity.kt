@@ -89,7 +89,6 @@ class MainActivity : AppCompatActivity() {
     //Initial data setup for showing list of objects
     private fun initAdapterData() {
         val list = mutableListOf<PlaceObjectBean>()
-
 //  3D objects
 
 //        Office furniture

@@ -73,7 +73,6 @@ sceneform.asset('sampledata/couch_2/couch.obj',
         'sampledata/couch_2/couch.sfa',
         'src/main/assets/couch_2')
 
-
 sceneform.asset('sampledata/chair2/OBJ.obj',
         'default',
         'sampledata/chair2/OBJ.sfa',

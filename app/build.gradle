@@ -52,10 +52,6 @@ sceneform.asset('sampledata/chair_office/Obj.obj',
         'sampledata/chair_office/Obj.sfa',
         'src/main/assets/chair_office')
 
-//sceneform.asset('sampledata/chair_office_2/chair.obj',
-//        'default',
-////        'sampledata/chair_office_2/chair.sfa',
-//        'src/main/assets/chair_office_2')
 
 sceneform.asset('sampledata/chair/model.obj',
         'default',
@@ -88,10 +84,6 @@ sceneform.asset('sampledata/table/Table_Large_Rectangular_01.obj',
         'sampledata/table/Table_Large_Rectangular_01.sfa',
         'src/main/assets/table')
 
-//sceneform.asset('sampledata/ofc003_OBJ/ofc003.obj',
-//        'default',
-//        'sampledata/ofc003_OBJ/ofc003.sfa',
-//        'src/main/assets/bookcase')
 
 sceneform.asset('sampledata/Fame_obj/OBJ.obj',
         'default',

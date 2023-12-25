@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
 
         // Initialize two buttons
         removeObjectButton = findViewById(R.id.removeObjectButton)
+
         resetButton = findViewById(R.id.resetButton)
 
         // Set click listeners for buttons
@@ -145,10 +146,9 @@ class MainActivity : AppCompatActivity() {
                 null
             }
 
-
     }
 
-    //To use for add node (another object)to scene
+    //To use for add node (another object) to scene
     private fun addNodeToScene(
         fragment: ArFragment?,
         anchor: Anchor,
@@ -216,7 +216,6 @@ class MainActivity : AppCompatActivity() {
                 .setPositiveButton("OK", null)
                 .show()
         }
-
     }
 
     private fun resetScene() {
@@ -248,5 +247,4 @@ class MainActivity : AppCompatActivity() {
                 .show()
         }
     }
-
 }

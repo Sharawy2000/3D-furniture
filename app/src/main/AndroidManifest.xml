@@ -16,18 +16,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/Theme.SceneSdkSample">
         <activity
-            android:name=".StartActivity">
+            android:name="com.scenesdksample.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"
+        <activity android:name="com.scenesdksample.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <meta-data android:name="com.google.ar.core" android:value="required" />

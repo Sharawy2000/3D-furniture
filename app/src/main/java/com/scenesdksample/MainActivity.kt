@@ -21,7 +21,6 @@ import com.google.ar.sceneform.ux.TransformableNode
 import com.scenesdksample.adapter.ArItemPlaceObjectAdapter
 import com.scenesdksample.databinding.ActivityMainBinding
 import com.scenesdksample.model.PlaceObjectBean
-import android.provider.MediaStore
 import android.widget.Button
 
 
@@ -32,9 +31,6 @@ class MainActivity : AppCompatActivity() {
     private var selectedObject: Uri? = null
     private var binding: ActivityMainBinding? = null
     private var selectedAnchorNode: AnchorNode? = null
-
-
-    //
     private var removeObjectButton: Button? = null
     private var resetButton: Button? = null
 
@@ -45,11 +41,12 @@ class MainActivity : AppCompatActivity() {
         registerCameraOnTapListener()
         showAppUsageAlert()
 
-        // Initialize buttons
+        // Initialize two buttons
         removeObjectButton = findViewById(R.id.removeObjectButton)
         resetButton = findViewById(R.id.resetButton)
 
         // Set click listeners for buttons
+
         removeObjectButton?.setOnClickListener {
             removeSelectedObject()
         }
@@ -93,6 +90,8 @@ class MainActivity : AppCompatActivity() {
     private fun initAdapterData() {
         val list = mutableListOf<PlaceObjectBean>()
 
+//  3D objects
+
 //        Office furniture
 
         list.add(PlaceObjectBean(R.drawable.chair_office, Uri.parse("chair_office.sfb")))
@@ -112,11 +111,13 @@ class MainActivity : AppCompatActivity() {
         //set default selection of object
         selectedObject = list[0].uri
 
+        // put the objects in view
         val userAdapter = ArItemPlaceObjectAdapter(this, list) { placeObject ->
             selectedObject = placeObject.uri
         }
         binding?.rlvImagesPreview?.adapter = userAdapter
     }
+
 
     //This function can be use for render object over camera surface by passing object uri
     @RequiresApi(Build.VERSION_CODES.N)
@@ -148,7 +149,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    //To use for add node to scene
+    //To use for add node (another object)to scene
     private fun addNodeToScene(
         fragment: ArFragment?,
         anchor: Anchor,
@@ -171,11 +172,13 @@ class MainActivity : AppCompatActivity() {
         return Html.fromHtml(source, Html.FROM_HTML_MODE_LEGACY)
     }
 
+
     override fun onBackPressed() {
         exitConfirmationAlert()
     }
 
     //To use show confirmation dialog for exit app
+
     private fun exitConfirmationAlert() {
         val builder = AlertDialog.Builder(this)
         builder.setMessage(getString(R.string.are_you_sure_want_to_exit))
@@ -186,52 +189,39 @@ class MainActivity : AppCompatActivity() {
         alert.show()
     }
 
-    // Other methods...
-
+    // To remove last object in screen
     private fun removeSelectedObject() {
+
         // Implement logic to remove the selected 3D object from the scene
         // For example, you can remove the last added node:
+
         if (selectedAnchorNode != null){
-            val lastAnchorNode = getLastAnchorNode()
+            val lastAnchorNode = selectedAnchorNode
             lastAnchorNode?.anchor?.detach()
             lastAnchorNode?.removeChild(lastAnchorNode.children.firstOrNull())
             selectedAnchorNode = null
 
             // Display a confirmation dialog or perform any other desired action
-            showObjectRemovedDialog()
+
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage("Object removed")
+                .setPositiveButton("OK", null)
+                .show()
 
         } else {
+
             // Show an AlertDialog if there is no object to remove
-            showNoObjectToRemoveDialog()
+
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage("Remove last object only")
+                .setPositiveButton("OK", null)
+                .show()
         }
 
     }
-    private fun showObjectRemovedDialog() {
-        val builder = AlertDialog.Builder(this)
-        builder.setMessage("Object removed")
-            .setPositiveButton("OK", null)
-            .show()
-    }
-
-    private fun showNoObjectToRemoveDialog() {
-        val builder = AlertDialog.Builder(this)
-        builder.setMessage("Remove last object only")
-            .setPositiveButton("OK", null)
-            .show()
-    }
-
-    private fun getLastAnchorNode(): AnchorNode? {
-        // Implement logic to get the last added AnchorNode
-        // For example, you can iterate through the scene's children
-        // and find the last AnchorNode.
-
-        return fragment?.arSceneView?.scene?.children
-            ?.filterIsInstance(AnchorNode::class.java)
-            ?.lastOrNull()
-    }
-
 
     private fun resetScene() {
+
         val anchorNodes = fragment?.arSceneView?.scene?.children
             ?.filterIsInstance(AnchorNode::class.java)
 
@@ -244,25 +234,20 @@ class MainActivity : AppCompatActivity() {
             }
 
             // Display a confirmation dialog
-            showResetConfirmationDialog()
+
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage("All 3D objects removed")
+                .setPositiveButton("OK", null)
+                .show()
         } else {
+
             // Show an AlertDialog if there are no objects to reset
-            showNoObjectsToResetDialog()
+
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage("No 3D objects to reset")
+                .setPositiveButton("OK", null)
+                .show()
         }
-    }
-
-    private fun showResetConfirmationDialog() {
-        val builder = AlertDialog.Builder(this)
-        builder.setMessage("All 3D objects removed")
-            .setPositiveButton("OK", null)
-            .show()
-    }
-
-    private fun showNoObjectsToResetDialog() {
-        val builder = AlertDialog.Builder(this)
-        builder.setMessage("No 3D objects to reset")
-            .setPositiveButton("OK", null)
-            .show()
     }
 
 }

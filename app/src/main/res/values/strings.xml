@@ -1,8 +1,14 @@
 <resources>
     <string name="app_name">3D furniture</string>
     <string name="app_help_message"> <![CDATA[<b>1. Look for large place</b><br/>]]><![CDATA[<br/><br/><b>2.Move device to detect the place</b><br/>]]><![CDATA[<br/><br/><b>3.Select object form list and tap in white points in screen</b><br/>]]></string>
+    <string name="app_info"> This Android application leverages augmented
+reality (AR) through Google\'s ARCore and
+Sceneform libraries to enable users to place 3D
+objects in their real-world environment using their
+device\'s camera.</string>
     <string name="are_you_sure_want_to_exit">Are you sure you want to exit?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="error">Error</string>
+    <string name="start">Start</string>
 </resources>

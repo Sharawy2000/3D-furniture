@@ -1,10 +1,10 @@
 package com.scenesdksample
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
-import android.text.Spanned
 import android.view.MotionEvent
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -27,26 +27,40 @@ import android.widget.Button
 
 class MainActivity : AppCompatActivity() {
 
-    private var fragment: ArFragment? = null
-    private var selectedObject: Uri? = null
-    private var binding: ActivityMainBinding? = null
-    private var selectedAnchorNode: AnchorNode? = null
+    private var fragment: ArFragment? = null // Ar fragment configures the device's camera for AR
+    private var selectedObject: Uri? = null // 3D model that stored in Uri enable android to read it
+    private var binding: ActivityMainBinding? = null // responsible for represent activityMain.xml => view
     private var removeObjectButton: Button? = null
     private var resetButton: Button? = null
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        init()
-        registerCameraOnTapListener()
-        showAppUsageAlert()
 
-        // Initialize two buttons
+        //Initialize design of activity main page and assign phone camera to Ar camera
+
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+
+        fragment = supportFragmentManager.findFragmentById(R.id.fragment_camera_preview) as ArFragment?
+
+        //Make a list of usable 3D objects
+        initializeAdapterData()
+
+        setupARPlaneTapListener()
+
+        // Display instructions for using app to the users
+        AlertDialog.Builder(this)
+            .setMessage(Html.fromHtml(resources.getString(R.string.app_help_message), Html.FROM_HTML_MODE_LEGACY))
+            .setPositiveButton(resources.getString(android.R.string.ok), null)
+            .show()
+
+        // Initialize two buttons Remove previous object , reset
+
         removeObjectButton = findViewById(R.id.removeObjectButton)
 
         resetButton = findViewById(R.id.resetButton)
 
-        // Set click listeners for buttons
+        // Set click listeners for buttons Remove previous object , reset
 
         removeObjectButton?.setOnClickListener {
             removeSelectedObject()
@@ -57,80 +71,71 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //Initial setup for View
-    private fun init() {
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-
-        fragment =
-            supportFragmentManager.findFragmentById(R.id.fragment_camera_preview) as ArFragment?
-        initAdapterData()
-    }
-
-    //Registered scene tapped listener
+    // Set the tap listener for detecting touches on AR planes
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun registerCameraOnTapListener() {
-        fragment!!.setOnTapArPlaneListener { hitResult: HitResult, plane: Plane, _: MotionEvent? ->
+    private fun setupARPlaneTapListener() {
+
+        fragment!!.setOnTapArPlaneListener { hitResult: HitResult, plane: Plane, motionEvent: MotionEvent? ->
+
+            // Check if the tapped plane is horizontal and facing upward
             if (plane.type != Plane.Type.HORIZONTAL_UPWARD_FACING) {
-                return@setOnTapArPlaneListener
+                return@setOnTapArPlaneListener // Ignore taps on non-horizontal planes
             }
+
+            // Create an anchor at the hit result's location
             val anchor = hitResult.createAnchor()
-            placeObject(fragment, anchor, selectedObject)
+
+            // Place the selected 3D object on the anchor position
+            placeSelectedObject(fragment, anchor, selectedObject)
         }
     }
 
-    //App usage step dialog
-    @RequiresApi(Build.VERSION_CODES.N)
-    private fun showAppUsageAlert() {
-        AlertDialog.Builder(this)
-            .setMessage(fromHtml(resources.getString(R.string.app_help_message)))
-            .setPositiveButton(resources.getString(android.R.string.ok), null)
-            .show()
-    }
 
-    //Initial data setup for showing list of objects
-    private fun initAdapterData() {
-        val list = mutableListOf<PlaceObjectBean>()
-//  3D objects
+    // Initialize data setup for showing list of objects
 
-//        Office furniture
+    private fun initializeAdapterData() {
+        val objectList = mutableListOf<PlaceObjectBean>()
 
-        list.add(PlaceObjectBean(R.drawable.chair_office, Uri.parse("chair_office.sfb")))
-        list.add(PlaceObjectBean(R.drawable.table_thumb, Uri.parse("table.sfb")))
-        list.add(PlaceObjectBean(R.drawable.chair_thumb, Uri.parse("chair.sfb")))
-        list.add(PlaceObjectBean(R.drawable.couch_thumb, Uri.parse("couch.sfb")))
-        list.add(PlaceObjectBean(R.drawable.chair_1, Uri.parse("chair_1.sfb")))
+        // Office furniture
+        objectList.add(PlaceObjectBean(R.drawable.chair_office, Uri.parse("chair_office.sfb")))
+        objectList.add(PlaceObjectBean(R.drawable.table_thumb, Uri.parse("table.sfb")))
+        objectList.add(PlaceObjectBean(R.drawable.couch_thumb, Uri.parse("couch.sfb")))
 
+        // Home furniture
+        objectList.add(PlaceObjectBean(R.drawable.chair_1, Uri.parse("chair_1.sfb")))
+        objectList.add(PlaceObjectBean(R.drawable.sofa_thumb, Uri.parse("sofa.sfb")))
+        objectList.add(PlaceObjectBean(R.drawable.fame, Uri.parse("fame.sfb")))
+        objectList.add(PlaceObjectBean(R.drawable.fana, Uri.parse("fana.sfb")))
+        objectList.add(PlaceObjectBean(R.drawable.bridgett, Uri.parse("bridgett.sfb")))
 
-//        Home furniture
+        // Set the default selection of the object
+        selectedObject = objectList[0].uri
 
-        list.add(PlaceObjectBean(R.drawable.sofa_thumb, Uri.parse("sofa.sfb")))
-        list.add(PlaceObjectBean(R.drawable.fame, Uri.parse("fame.sfb")))
-        list.add(PlaceObjectBean(R.drawable.fana, Uri.parse("fana.sfb")))
-        list.add(PlaceObjectBean(R.drawable.bridgett, Uri.parse("bridgett.sfb")))
-
-        //set default selection of object
-        selectedObject = list[0].uri
-
-        // put the objects in view
-        val userAdapter = ArItemPlaceObjectAdapter(this, list) { placeObject ->
+        // Set up the adapter and bind it to the RecyclerView
+        val objectAdapter = ArItemPlaceObjectAdapter(this, objectList) { placeObject ->
             selectedObject = placeObject.uri
         }
-        binding?.rlvImagesPreview?.adapter = userAdapter
+        binding?.rlvImagesPreview?.adapter = objectAdapter
     }
 
-
     //This function can be use for render object over camera surface by passing object uri
+    /*
+    * purpose of this code is to load a 3D model asynchronously and then, upon successful completion,
+    *  add the model to the AR scene using the addNodeToScene function.
+    *  If there is an exception during the loading process, it displays an error dialog.
+    * */
+
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun placeObject(
-        fragment: ArFragment?,
-        anchor: Anchor,
-        model: Uri?
+    private fun placeSelectedObject(
+        fragment: ArFragment?, //  used to set up and manage the AR session in your Android app
+        anchor: Anchor, // fixed orientation in real world (real place)
+        model: Uri? //that points to a 3D model or asset
     ) {
         ModelRenderable.builder()
             .setSource(fragment!!.context, model)
             .build()
             .thenAccept { renderable: ModelRenderable ->
-                addNodeToScene(
+                placeRenderableInScene(
                     fragment,
                     anchor,
                     renderable
@@ -148,71 +153,55 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    //To use for add node (another object) to scene
-    private fun addNodeToScene(
-        fragment: ArFragment?,
+    //To use for add node (3D object) to scene
+
+    private fun placeRenderableInScene(
+        arFragment: ArFragment?,
         anchor: Anchor,
         renderable: Renderable
     ) {
-        val anchorNode =
-            AnchorNode(anchor)
-        val node = TransformableNode(fragment!!.transformationSystem)
-        node.renderable = renderable
-        node.setParent(anchorNode)
+        // Create an AnchorNode with the specified anchor
+        val anchorNode = AnchorNode(anchor)
+
+        // Create a TransformableNode to allow user interaction with the object
+        val transformableNode = TransformableNode(arFragment!!.transformationSystem)
+        transformableNode.renderable = renderable
+        transformableNode.setParent(anchorNode)
+
         // Set the selected AnchorNode when placing the object
-        selectedAnchorNode = anchorNode
-        fragment.arSceneView.scene.addChild(anchorNode)
-        node.select()
+//        selectedAnchorNode = anchorNode
+
+        // Add the AnchorNode to the AR scene
+        arFragment.arSceneView.scene.addChild(anchorNode)
+
+        // Select the node to make it interactive
+        transformableNode.select()
     }
 
-    //To use show string content in html form
-    @RequiresApi(Build.VERSION_CODES.N)
-    private fun fromHtml(source: String?): Spanned? {
-        return Html.fromHtml(source, Html.FROM_HTML_MODE_LEGACY)
-    }
 
+    // To remove last object added in screen
 
-    override fun onBackPressed() {
-        exitConfirmationAlert()
-    }
-
-    //To use show confirmation dialog for exit app
-
-    private fun exitConfirmationAlert() {
-        val builder = AlertDialog.Builder(this)
-        builder.setMessage(getString(R.string.are_you_sure_want_to_exit))
-            .setCancelable(false)
-            .setPositiveButton(getString(R.string.yes)) { _, _ -> this@MainActivity.finish() }
-            .setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.cancel() }
-        val alert = builder.create()
-        alert.show()
-    }
-
-    // To remove last object in screen
     private fun removeSelectedObject() {
 
-        // Implement logic to remove the selected 3D object from the scene
-        // For example, you can remove the last added node:
+        val anchorNodes = fragment?.arSceneView?.scene?.children
+            ?.filterIsInstance(AnchorNode::class.java)
 
-        if (selectedAnchorNode != null){
-            val lastAnchorNode = selectedAnchorNode
-            lastAnchorNode?.anchor?.detach()
-            lastAnchorNode?.removeChild(lastAnchorNode.children.firstOrNull())
-            selectedAnchorNode = null
+        // Check if there is a previously added object
+        if (anchorNodes?.isNotEmpty() == true) {
+            // Remove the last added AnchorNode from the AR scene
+            val lastAnchorNode = anchorNodes.last()
+            lastAnchorNode.anchor?.detach()
+            fragment?.arSceneView?.scene?.removeChild(lastAnchorNode)
 
             // Display a confirmation dialog or perform any other desired action
-
             val builder = AlertDialog.Builder(this)
-            builder.setMessage("Object removed")
+            builder.setMessage("Last object removed")
                 .setPositiveButton("OK", null)
                 .show()
-
         } else {
-
-            // Show an AlertDialog if there is no object to remove
-
+            // Show an AlertDialog if there are no objects to remove
             val builder = AlertDialog.Builder(this)
-            builder.setMessage("Remove last object only")
+            builder.setMessage("No objects to remove")
                 .setPositiveButton("OK", null)
                 .show()
         }
@@ -246,5 +235,13 @@ class MainActivity : AppCompatActivity() {
                 .setPositiveButton("OK", null)
                 .show()
         }
+    }
+
+    override fun onBackPressed() {
+
+        val intent = Intent(this, StartActivity::class.java)
+        startActivity(intent)
+        finish()
+
     }
 }

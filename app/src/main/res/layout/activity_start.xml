@@ -4,15 +4,73 @@
     android:layout_height="match_parent"
     android:background="@drawable/start_background">
 
+    <TextView
+        android:id="@+id/welcome"
+
+        android:layout_width="487dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="39dp"
+        android:layout_marginTop="136dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="475dp"
+        android:text="Welcome to our App"
+        android:textAlignment="center"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="35dp"
+
+
+        android:textStyle="bold" />
+
     <Button
         android:id="@+id/startButton"
-        android:layout_width="wrap_content"
+        android:layout_width="143dp"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="Start"
-        android:textSize="18sp"
-        android:textStyle="bold"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="135dp"
+        android:layout_marginTop="328dp"
+        android:layout_marginEnd="135dp"
         android:background="@drawable/start_button_background"
-        android:textColor="@android:color/white"/>
+        android:text="Start"
+        android:textColor="@android:color/white"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/info"
+        android:layout_width="143dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/startButton"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="135dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="135dp"
+        android:background="@drawable/start_button_background"
+        android:text="about"
+        android:textColor="@android:color/white"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/exit"
+        android:layout_width="143dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/info"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="135dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="135dp"
+        android:background="@drawable/start_button_background"
+        android:text="exit"
+        android:textColor="@android:color/white"
+        android:textSize="15sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>
